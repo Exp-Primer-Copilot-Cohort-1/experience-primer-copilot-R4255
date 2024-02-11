@@ -1,11 +1,8 @@
-const http = require('http');
-//create web server
-const server = http.createServer((req, res) => {
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/plain');
-    res.end('Hello, World!');
-});
-
-server.listen(3000, 'localhost', () => {
-    console.log('Server running at http://localhost:3000/');
-});
+// Create web server
+// 1. Create a web server
+// 2. Create a route for GET /comments
+// 3. Create a route for POST /comments
+// 4. Create a route for DELETE /comments
+// 5. Create a route for PUT /comments
+// 6. Create a route for PATCH /comments
+// 7. Create a route for OPTIONS /comments
