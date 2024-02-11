@@ -1,70 +1,51 @@
-
-// 1.1. Import the http module
-const http = require('http');
-
-// 1.2. Create a web server
-const server = http.createServer((req, res) => {
-    res.end('Welcome to the comments page');
+//create web server
+var express = require('express');
+var app = express();
+var bodyParser = require('body-parser');
+var fs = require('fs');
+var path = require('path');
+var MongoClient = require('mongodb').MongoClient;
+var assert = require('assert');
+var url = 'mongodb://localhost:27017/Comments';
+var db;
+var collection;
+var collectionName = 'comments';
+//connect to the database
+MongoClient.connect(url, function(err, database) {
+  assert.equal(null, err);
+  console.log("Connected correctly to server");
+  db = database;
+  collection = db.collection(collectionName);
+  //db.close();
 });
 
-// 1.3. Start the web server
-server.listen(3000, 'localhost', () => {
-    console.log('Server is listening on port 3000');
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static('public'));
+
+app.get('/', function(req, res){
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// Step 2: Create a route for the home page
-// 2.1. Import the http module
-const http = require('http');
-
-// 2.2. Create a web server
-const server = http.createServer((req, res) => {
-    if (req.url === '/') {
-        res.end('Welcome to the home page');
-    } else {
-        res.end('Page not found');
-    }
+app.get('/comments', function(req, res){
+  collection.find({}).toArray(function(err, docs) {
+    assert.equal(err, null);
+    console.log("Found the following records");
+    console.log(docs);
+    res.json(docs);
+  });
 });
 
-// 2.3. Start the web server
-server.listen(3000, 'localhost', () => {
-    console.log('Server is listening on port 3000');
+app.post('/comments', function(req, res){
+  console.log(req.body);
+  collection.insertOne(req.body, function(err, result) {
+    assert.equal(err, null);
+    console.log("Inserted a document into the collection");
+    console.log(result);
+    res.json(result);
+  });
 });
 
-// Step 3: Create a route for the comments page
-// 3.1. Import the http module
-const http = require('http');
-
-// 3.2. Create a web server
-const server = http.createServer((req, res) => {
-    if (req.url === '/') {
-        res.end('Welcome to the home page');
-    } else if (req.url === '/comments') {
-        res.end('Welcome to the comments page');
-    } else {
-        res.end('Page not found');
-    }
+app.listen(3000, function(){
+  console.log('running on port 3000');
 });
-
-// 3.3. Start the web server
-server.listen(3000, 'localhost', () => {
-    console.log('Server is listening on port 3000');
-});
-
-// Step 4: Start the web server
-// 4.1. Import the http module
-const http = require('http');
-
-// 4.2. Create a web server
-const server = http.createServer((req, res) => {
-    if (req.url === '/') {
-        res.end('Welcome to the home page');
-    } else if (req.url === '/comments') {
-        res.end('Welcome to the comments page');
-    } else {
-        res.end('Page not found');
-    }
-});
-
-// 4.3. Start the web server
-server.listen(3000, 'localhost', () => {
-    console.log('Server is listening on port
